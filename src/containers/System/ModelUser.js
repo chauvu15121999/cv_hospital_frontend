@@ -4,23 +4,32 @@ import { connect } from 'react-redux';
 import { Modal, ModalBody, ModalHeader , ModalFooter ,Button} from 'reactstrap';
 class ModelUser extends Component {
 
-    state = {
-
+    constructor(props) {
+        super(props);
+        this.state = {
+     
+        }
     }
 
     componentDidMount() {
+
     }
 
-    toggle = () => {
-        
+    toggleUserModel = () => {
+        this.props.toggleUserModel();
     }
 
 
     render() {
+        let {isOpen} = this.props
         return (
             <>
-                <Modal isOpen={true} toggle={() => {this.toggle()}}>
-                    <ModalHeader toggle={() => {this.toggle()}}>
+                <Modal 
+                    isOpen={isOpen} 
+                    toggle={() => {this.toggle()}}
+                    size="lg"
+                >
+                    <ModalHeader toggle={() => {this.toggleUserModel()}}>
                         Modal title
                     </ModalHeader>
                     <ModalBody>
@@ -34,7 +43,7 @@ class ModelUser extends Component {
                         Do Something
                     </Button>
                     {' '}
-                    <Button onClick={() => {this.toggle()}}>
+                    <Button onClick={() => {this.toggleUserModel()}}>
                         Cancel
                     </Button>
                     </ModalFooter>

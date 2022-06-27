@@ -9,7 +9,8 @@ class UserManage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            arrUsers: []
+            arrUsers: [],
+            isOpenModelUser: false
         }
     }
 
@@ -25,7 +26,15 @@ class UserManage extends Component {
     }
 
     handleAddNewUser = () => {
-        alert('is me')
+        this.setState({
+            isOpenModelUser: true
+        })
+    }
+
+    toggleUserModel = () => {
+        this.setState({
+            isOpenModelUser: !this.state.isOpenModelUser
+        })
     }
 
     /** Life cycle 
@@ -36,10 +45,13 @@ class UserManage extends Component {
      * 
      */
     render() {
-        let {arrUsers} = this.state;
+        let {arrUsers , isOpenModelUser} = this.state;
         return (
             <div className="users-container">
-                <ModelUser />
+                <ModelUser 
+                    isOpen={isOpenModelUser} // Prop variable
+                    toggleUserModel={this.toggleUserModel} //Prop func
+                />
                 <div className='title text-center'> manage users with Vũ</div>
                 <div className='ms-4 mt-3'>
                     <button 
