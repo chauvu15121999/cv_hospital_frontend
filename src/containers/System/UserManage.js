@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import {getAllUsers} from '../../services/userService'
+import ModelUser from './ModelUser';
+
 import './UserManage.scss'
 class UserManage extends Component {
     constructor(props) {
@@ -12,13 +14,18 @@ class UserManage extends Component {
     }
 
     async componentDidMount() {
-        let res = await getAllUsers();
+        let res = await getAllUsers()
+
         if(res && res.errCode === 0 ){
             // Hàm setState là bất đồng bộ
             this.setState({
                 arrUsers: res.data
             },)  
         }
+    }
+
+    handleAddNewUser = () => {
+        alert('is me')
     }
 
     /** Life cycle 
@@ -32,8 +39,16 @@ class UserManage extends Component {
         let {arrUsers} = this.state;
         return (
             <div className="users-container">
+                <ModelUser />
                 <div className='title text-center'> manage users with Vũ</div>
-                <div className='user-table mt-3 p-4'>
+                <div className='ms-4 mt-3'>
+                    <button 
+                        className='btn btn-primary px-3 '
+                        onClick={() => this.handleAddNewUser()}
+                        ><i className='fas fa-plus me-1'></i>Add new users
+                    </button>
+                </div>
+                <div className='user-table mt-1 p-4'>
                     <table id="customers">
                         <thead>
                             <tr>
@@ -54,8 +69,8 @@ class UserManage extends Component {
                                             <td>{user.firstName}</td>
                                             <td>{user.address}</td>
                                             <td>
-                                                <button className='btn btn-primary'><i className='fas fa-pencil-alt' /></button>
-                                                <button className='btn btn-danger ms-2'><i className='fas fa-trash' /></button>
+                                                <button className='btn btn-primary btn-table'><i className='fas fa-pencil-alt' /></button>
+                                                <button className='btn btn-danger ms-2 btn-table'><i className='fas fa-trash' /></button>
                                             </td>
                                         </tr>
                                     )
