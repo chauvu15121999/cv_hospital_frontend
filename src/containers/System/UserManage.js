@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import {getAllUsers} from '../../services/userService'
+import {getAllUsers , createNewUserService} from '../../services/userService'
 import ModelUser from './ModelUser';
 
 import './UserManage.scss'
@@ -15,6 +15,16 @@ class UserManage extends Component {
     }
 
     async componentDidMount() {
+        await  this.getAllUsersFormReact()
+    }
+
+    handleAddNewUser = () => {
+        this.setState({
+            isOpenModelUser: true
+        })
+    }
+
+    getAllUsersFormReact = async () => {
         let res = await getAllUsers()
 
         if(res && res.errCode === 0 ){
@@ -25,16 +35,25 @@ class UserManage extends Component {
         }
     }
 
-    handleAddNewUser = () => {
-        this.setState({
-            isOpenModelUser: true
-        })
-    }
-
     toggleUserModel = () => {
         this.setState({
             isOpenModelUser: !this.state.isOpenModelUser
         })
+    }
+
+    createNewUser = async (data) => {
+        try{
+            let res = await createNewUserService(data)
+            if(res.errCode){
+                alert(res.message)
+            }else{
+                console.log(res)
+                await this.getAllUsersFormReact
+                this.toggleUserModel()
+            }   
+        }catch(e) {
+            console.log(e)
+        }
     }
 
     /** Life cycle 
@@ -51,6 +70,7 @@ class UserManage extends Component {
                 <ModelUser 
                     isOpen={isOpenModelUser} // Prop variable
                     toggleUserModel={this.toggleUserModel} //Prop func
+                    createNewUser = {this.createNewUser}
                 />
                 <div className='title text-center'> manage users with Vũ</div>
                 <div className='ms-4 mt-3'>
