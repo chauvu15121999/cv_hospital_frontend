@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, ModalBody, ModalHeader , ModalFooter ,Button , Form , FormGroup , Label , Input , Row , Col} from 'reactstrap';
+import { emitter } from '../../utils/emitter';
 class ModelUser extends Component {
 
     constructor(props) {
@@ -13,6 +14,20 @@ class ModelUser extends Component {
             lastName: '',
             address: ''
         }
+
+        this.listenToEmitter()
+    }
+
+    listenToEmitter() {
+        emitter.on(`EVENT_CLEAR_MODAL_CREATE_USER_DATA` , () => {
+            this.setState({
+                email: '',
+                password: '',
+                firstName: '',
+                lastName: '',
+                address: ''
+            })
+        })
     }
 
     componentDidMount() {
@@ -47,13 +62,6 @@ class ModelUser extends Component {
     addNewUser = () => {
         this.checkValidateInput()
         this.props.createNewUser(this.state)
-        this.setState({
-            email: '',
-            password: '',
-            firstName: '',
-            lastName: '',
-            address: ''
-        })
     }
 
 

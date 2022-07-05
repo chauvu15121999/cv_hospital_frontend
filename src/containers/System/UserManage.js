@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import {getAllUsers , createNewUserService} from '../../services/userService'
+import {getAllUsers , createNewUserService , deleteUserService} from '../../services/userService'
 import ModelUser from './ModelUser';
+import { emitter } from '../../utils/emitter';
 
 import './UserManage.scss'
 class UserManage extends Component {
@@ -48,12 +49,26 @@ class UserManage extends Component {
                 alert(res.message)
             }else{
                 console.log(res)
-                await this.getAllUsersFormReact
+                await this.getAllUsersFormReact()
                 this.toggleUserModel()
+                emitter.emit('EVENT_CLEAR_MODAL_CREATE_USER_DATA', {'id': 'your id'})
             }   
         }catch(e) {
             console.log(e)
         }
+    }
+
+    hanldeDeleteUser = async (user) => {
+       try {
+            let res = await deleteUserService(user.id)
+            if(res && res.errCode == 0){
+                this.getAllUsersFormReact()
+            }else {
+                alert(res.message)
+            }
+       }catch(e){
+            console.log(e)
+       }
     }
 
     /** Life cycle 
@@ -102,7 +117,7 @@ class UserManage extends Component {
                                             <td>{user.address}</td>
                                             <td>
                                                 <button className='btn btn-primary btn-table'><i className='fas fa-pencil-alt' /></button>
-                                                <button className='btn btn-danger ms-2 btn-table'><i className='fas fa-trash' /></button>
+                                                <button onClick={() => this.hanldeDeleteUser(user)} className='btn btn-danger ms-2 btn-table'><i className='fas fa-trash' /></button>
                                             </td>
                                         </tr>
                                     )
