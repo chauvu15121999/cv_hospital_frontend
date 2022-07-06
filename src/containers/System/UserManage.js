@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import {getAllUsers , createNewUserService , deleteUserService} from '../../services/userService'
+import {getAllUsers , createNewUserService , deleteUserService, editUserService} from '../../services/userService'
 import ModelUser from './ModelUser';
+import ModelEditUser from './ModelEditUser';
 import { emitter } from '../../utils/emitter';
 
 import './UserManage.scss'
@@ -11,7 +12,9 @@ class UserManage extends Component {
         super(props);
         this.state = {
             arrUsers: [],
-            isOpenModelUser: false
+            isOpenModelUser: false,
+            isOpenModelEditUser: false,
+            userEdit: {}
         }
     }
 
@@ -58,6 +61,19 @@ class UserManage extends Component {
         }
     }
 
+    handleEditUser = (user) => {
+        this.setState({
+            isOpenModelEditUser: true,
+            userEdit: user
+        })
+    }
+
+    toggleUserEditModel = () => {
+        this.setState({
+            isOpenModelEditUser: false
+        })
+    }
+
     hanldeDeleteUser = async (user) => {
        try {
             let res = await deleteUserService(user.id)
@@ -71,6 +87,23 @@ class UserManage extends Component {
        }
     }
 
+    doEditUser = async (user) => {
+        try{
+             let res = await editUserService(user);
+            if(res && !res.errCode){
+                this.setState({
+                    isOpenModelEditUser: false
+                })
+
+                await this.getAllUsersFormReact();
+            }else{
+                alert(res.message)
+            }
+        }catch(e){
+            console.log(e)
+        }
+    }
+
     /** Life cycle 
      * Run component 
      * 1. Run construct ->  
@@ -79,7 +112,7 @@ class UserManage extends Component {
      * 
      */
     render() {
-        let {arrUsers , isOpenModelUser} = this.state;
+        let {arrUsers , isOpenModelUser , isOpenModelEditUser , userEdit} = this.state;
         return (
             <div className="users-container">
                 <ModelUser 
@@ -87,6 +120,15 @@ class UserManage extends Component {
                     toggleUserModel={this.toggleUserModel} //Prop func
                     createNewUser = {this.createNewUser}
                 />
+                {
+                    this.state.isOpenModelEditUser && 
+                        <ModelEditUser 
+                            isOpen={isOpenModelEditUser} // Prop variable
+                            toggleUserModel={this.toggleUserEditModel} //Prop func
+                            currentUser = {userEdit}
+                            doEditUser={this.doEditUser}
+                        />
+                }
                 <div className='title text-center'> manage users with Vũ</div>
                 <div className='ms-4 mt-3'>
                     <button 
@@ -116,7 +158,7 @@ class UserManage extends Component {
                                             <td>{user.firstName}</td>
                                             <td>{user.address}</td>
                                             <td>
-                                                <button className='btn btn-primary btn-table'><i className='fas fa-pencil-alt' /></button>
+                                                <button onClick={() => this.handleEditUser(user)} className='btn btn-primary btn-table'><i className='fas fa-pencil-alt' /></button>
                                                 <button onClick={() => this.hanldeDeleteUser(user)} className='btn btn-danger ms-2 btn-table'><i className='fas fa-trash' /></button>
                                             </td>
                                         </tr>
